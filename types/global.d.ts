@@ -5,3 +5,10 @@ export interface User {
 	role: "user" | "admin";
 	photoURL?: string;
 }
+
+export interface Genre {
+	_id: string;
+	name: string;
+	createdAt: string;
+	updatedAt: string;
+}
