@@ -8,12 +8,9 @@ export default async function GenresPage() {
     console.log("Genres:", genres);
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-6 p-4">
             <h1 className="text-2xl font-semibold">Genres</h1>
-
-            {/* Client Component only for mutation */}
             <GenreForm />
-
             <GenreTable genres={genres.data!} />
         </div>
     );
