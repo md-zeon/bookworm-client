@@ -2,13 +2,14 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { signUpAction } from "@/lib/actions/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Field, FieldLabel, FieldGroup, FieldDescription } from "@/components/ui/field";
 import Link from "next/link";
 import ROUTES from "@/constants/routes";
 import { toast } from "sonner";
+import { api } from "@/lib/api";
+import { uploadImage } from "@/lib/upload";
 
 const SignUpForm = () => {
     const router = useRouter();
@@ -20,30 +21,50 @@ const SignUpForm = () => {
         setIsLoading(true);
         setError(null);
 
-        const formData = new FormData(e.currentTarget);
-        console.log("Form Data:", Object.fromEntries(formData.entries()));
+        try {
+            const formData = new FormData(e.currentTarget);
+            const name = formData.get("name") as string;
+            const email = formData.get("email") as string;
+            const password = formData.get("password") as string;
+            const confirmPassword = formData.get("confirmPassword") as string;
+            const photoFile = formData.get("photoFile") as File | null;
 
+            if (password !== confirmPassword) {
+                throw new Error("Passwords do not match");
+            }
 
-        if (formData.get("password") !== formData.get("confirmPassword")) {
-            setError("Passwords do not match");
-            toast.error("Passwords do not match");
-            setIsLoading(false);
-            return;
-        }
+            // Upload image to Cloudinary if provided
+            let photoURL: string | undefined;
 
-        const result = await signUpAction(formData);
+            if (photoFile && photoFile.size > 0) {
+                const uploadedUrl = await uploadImage(photoFile);
+                if (!uploadedUrl) throw new Error("Failed to upload profile picture");
+                photoURL = uploadedUrl;
+            }
 
-        if (result.success) {
-            const targetPath = result.role === 'admin' ? '/admin/dashboard' : '/user/library';
+            console.log("photoURL", photoURL);
+            const result = await api.auth.signUp({ name, email, password, photoURL });
+
+            if (!result.success) {
+                throw new Error(result.message || "Registration failed");
+            }
+
+            const targetPath = result.user.role === "admin" ? "/admin/dashboard" : "/user/library";
+
             router.push(targetPath);
-        } else {
-            setError(result.message);
-            toast.error("Sign up failed.", {
-                description: result.message || "Please check your details and try again.",
-            });
+        } catch (err) {
+            const message =
+                err instanceof Error
+                    ? err.message
+                    : "Something went wrong. Please try again.";
+
+            setError(message);
+            toast.error("Sign up failed", { description: message });
+        } finally {
             setIsLoading(false);
         }
     };
+
 
     return (
         <form onSubmit={handleSignUp} className="p-6 md:p-8">
@@ -75,7 +96,7 @@ const SignUpForm = () => {
 
                 <Field>
                     <FieldLabel htmlFor="avatar">Profile Picture (optional)</FieldLabel>
-                    <Input id="avatar" name="imageURL" type="file" accept="image/*" disabled={isLoading} />
+                    <Input id="avatar" name="photoFile" type="file" accept="image/*" disabled={isLoading} />
                 </Field>
 
                 {error && <div className="p-3 text-sm text-red-500 bg-red-50 border border-red-200 rounded-md">{error}</div>}
