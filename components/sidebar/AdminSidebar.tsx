@@ -9,6 +9,7 @@ import {
     SidebarContent,
     SidebarFooter,
     SidebarHeader,
+    SidebarMenuButton,
     SidebarRail,
 } from "@/components/ui/sidebar"
 
@@ -22,6 +23,8 @@ import {
     Settings,
     Library,
 } from "lucide-react"
+import ROUTES from "@/constants/routes"
+import Link from "next/link"
 
 export const data = {
     user: {
@@ -33,7 +36,7 @@ export const data = {
     navMain: [
         {
             title: "Dashboard",
-            url: "/admin/dashboard",
+            url: ROUTES.ADMIN.DASHBOARD,
             icon: LayoutDashboard,
             items: [],
         },
@@ -89,7 +92,12 @@ export function AdminSidebar({ ...props }: React.ComponentProps<typeof Sidebar>)
     return (
         <Sidebar collapsible="icon" {...props}>
             <SidebarHeader>
-                <h1 className="font-bold text-xl flex items-center gap-2"><Library className="size-5" /> Bookworm</h1>
+                <SidebarMenuButton asChild tooltip="Bookworm">
+                    <Link href={ROUTES.ADMIN.DASHBOARD} className="flex items-center gap-2">
+                        <Library className="w-5 h-5" />
+                        <span>Bookworm</span>
+                    </Link>
+                </SidebarMenuButton>
             </SidebarHeader>
             <SidebarContent>
                 <NavMain items={data.navMain} />
@@ -98,6 +106,6 @@ export function AdminSidebar({ ...props }: React.ComponentProps<typeof Sidebar>)
                 <NavUser user={data.user} />
             </SidebarFooter>
             <SidebarRail />
-        </Sidebar>
+        </Sidebar >
     )
 }
