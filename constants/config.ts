@@ -4,6 +4,7 @@ const CONFIG = {
 	CLOUDINARY_CLOUD_NAME: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
 	CLOUDINARY_UPLOAD_PRESET:
 		process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || "bookworm_uploads",
+	JWT_SECRET: process.env.JWT_SECRET,
 };
 
 export default CONFIG;

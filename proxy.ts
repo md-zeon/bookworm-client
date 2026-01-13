@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import jwt from "jsonwebtoken";
+import CONFIG from "./constants/config";
 
-const JWT_SECRET = process.env.JWT_SECRET!;
+const JWT_SECRET = CONFIG.JWT_SECRET!;
 
 interface TokenPayload {
 	id: string;
