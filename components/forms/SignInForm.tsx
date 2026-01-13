@@ -4,10 +4,11 @@ import { Button } from "@/components/ui/button";
 import { Field, FieldDescription, FieldGroup, FieldLabel, FieldSeparator } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import ROUTES from "@/constants/routes";
-import { signInAction } from "@/lib/actions/auth";
+import { api } from "@/lib/api";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { toast } from "sonner";
 
 const SignInForm = () => {
     const router = useRouter();
@@ -19,22 +20,34 @@ const SignInForm = () => {
         setIsLoading(true);
         setError(null);
 
-        const formData = new FormData(e.currentTarget);
+        try {
+            const formData = new FormData(e.currentTarget);
+            const email = formData.get("email") as string;
+            const password = formData.get("password") as string;
+            const result = await api.auth.signIn({ email, password });
 
-        // 1. Call the Server Action
-        const result = await signInAction(formData);
+            if (!result.success) {
+                console.log("result.message", result.message);
+                throw new Error(result.message || "Invalid credentials");
+            }
 
-        if (result.success) {
-            // 2. Redirect based on the role returned by the action
-            // Middleware will handle the "Hard" security, but this provides a smooth UX
-            const targetPath = result.role === 'admin' ? '/admin/dashboard' : '/user/library';
+            const targetPath =
+                result.role === "admin" ? "/admin/dashboard" : "/user/library";
+
             router.push(targetPath);
-        } else {
-            console.log("Login failed:", result.message);
-            setError(result.message || "Something went wrong");
+        } catch (err) {
+            const message =
+                err instanceof Error
+                    ? err.message
+                    : "Something went wrong. Please try again.";
+
+            setError(message);
+            toast.error("Login failed", { description: message });
+        } finally {
             setIsLoading(false);
         }
     };
+
 
     return (
         <form onSubmit={handleLogin} className="p-6 md:p-8">
@@ -67,6 +80,9 @@ const SignInForm = () => {
                     </div>
                     <Input id="password" name="password" type="password" required />
                 </Field>
+
+                {error && <div className="p-3 text-sm text-red-500 bg-red-50 border border-red-200 rounded-md">{error}</div>}
+
                 <Field>
                     <Button type="submit">{isLoading ? "Signing in..." : "Login"}</Button>
                 </Field>
