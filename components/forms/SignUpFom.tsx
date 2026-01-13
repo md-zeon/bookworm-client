@@ -10,6 +10,7 @@ import ROUTES from "@/constants/routes";
 import { toast } from "sonner";
 import { api } from "@/lib/api";
 import { uploadImage } from "@/lib/upload";
+import { User } from "@/types/global";
 
 const SignUpForm = () => {
     const router = useRouter();
@@ -29,6 +30,10 @@ const SignUpForm = () => {
             const confirmPassword = formData.get("confirmPassword") as string;
             const photoFile = formData.get("photoFile") as File | null;
 
+            if (!email || !email.includes("@")) {
+                throw new Error("Please enter a valid email address.");
+            }
+
             if (password !== confirmPassword) {
                 throw new Error("Passwords do not match");
             }
@@ -43,15 +48,20 @@ const SignUpForm = () => {
             }
 
             console.log("photoURL", photoURL);
-            const result = await api.auth.signUp({ name, email, password, photoURL });
+
+            const result = await api.auth.signUp<User>({ name, email, password, photoURL });
 
             if (!result.success) {
                 throw new Error(result.message || "Registration failed");
             }
 
-            const targetPath = result.user.role === "admin" ? "/admin/dashboard" : "/user/library";
+            toast.success("Success", { description: "Account created successfully!" });
 
-            router.push(targetPath);
+            if (result.data) {
+                const targetPath = result.data?.role === "admin" ? "/admin/dashboard" : "/user/library";
+                router.push(targetPath);
+            }
+
         } catch (err) {
             const message =
                 err instanceof Error

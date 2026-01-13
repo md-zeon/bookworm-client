@@ -1,31 +1,20 @@
 import apiFetch from "./handlers/fetch";
-
-interface SignInParams {
-	email: string;
-	password: string;
-}
-
-interface SignUpParams {
-	name: string;
-	email: string;
-	password: string;
-	photoURL?: string;
-}
+import { SignInParams, SignUpParams } from "./types/api";
 
 export const api = {
 	auth: {
-		signIn: ({ email, password }: SignInParams) =>
-			apiFetch("/auth/signin", {
+		signIn: <T = unknown>({ email, password }: SignInParams) =>
+			apiFetch<T>("/auth/signin", {
 				method: "POST",
 				body: JSON.stringify({ email, password }),
 			}),
-		signUp: ({ name, email, password, photoURL }: SignUpParams) =>
-			apiFetch("/auth/signup", {
+		signUp: <T = unknown>({ name, email, password, photoURL }: SignUpParams) =>
+			apiFetch<T>("/auth/signup", {
 				method: "POST",
 				body: JSON.stringify({ name, email, password, photoURL }),
 			}),
 		signOut: () =>
-			apiFetch("/auth/signout", {
+			apiFetch<null>("/auth/signout", {
 				method: "POST",
 			}),
 	},

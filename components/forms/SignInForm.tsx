@@ -5,6 +5,7 @@ import { Field, FieldDescription, FieldGroup, FieldLabel, FieldSeparator } from 
 import { Input } from "@/components/ui/input";
 import ROUTES from "@/constants/routes";
 import { api } from "@/lib/api";
+import { User } from "@/types/global";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -24,17 +25,25 @@ const SignInForm = () => {
             const formData = new FormData(e.currentTarget);
             const email = formData.get("email") as string;
             const password = formData.get("password") as string;
-            const result = await api.auth.signIn({ email, password });
+
+            if (!email || !email.includes("@")) {
+                throw new Error("Please enter a valid email address.");
+            }
+
+            const result = await api.auth.signIn<User>({ email, password });
 
             if (!result.success) {
                 console.log("result.message", result.message);
                 throw new Error(result.message || "Invalid credentials");
             }
 
+            toast.success("Login successful", { description: `Welcome back! ${result.data?.name}` });
+
             const targetPath =
-                result.role === "admin" ? "/admin/dashboard" : "/user/library";
+                result.data?.role === "admin" ? "/admin/dashboard" : "/user/library";
 
             router.push(targetPath);
+
         } catch (err) {
             const message =
                 err instanceof Error
