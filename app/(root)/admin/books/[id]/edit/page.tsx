@@ -1,6 +1,7 @@
+import EditBookForm from "@/components/forms/EditBookForm";
 import { api } from "@/lib/api";
-import { Genre, Book } from "@/types/global";
-import EditBookForm from "./EditBookForm";
+import { Book, Genre } from "@/types/global";
+
 
 interface PageProps {
     params: {
@@ -9,7 +10,8 @@ interface PageProps {
 }
 
 export default async function EditBookPage({ params }: PageProps) {
-    const { data: book }: { data: Book } = await api.books.getById(params.id);
+    const { id } = await params;
+    const { data: book }: { data: Book } = await api.books.getById(id);
     const { data: genres }: { data: Genre[] } = await api.genres.getAll();
 
     return (

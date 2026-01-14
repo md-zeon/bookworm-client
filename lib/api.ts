@@ -39,6 +39,7 @@ export const api = {
 	books: {
 		getAll: <T = Book[]>(params?: string) =>
 			apiFetch<T>(`/admin/books${params ? `?${params}` : ""}`),
+		getById: <T = Book>(id: string) => apiFetch<T>(`/admin/books/${id}`),
 		create: <T = Book>(bookData: Partial<Book>) =>
 			apiFetch<T>("/admin/books", {
 				method: "POST",

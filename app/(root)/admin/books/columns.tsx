@@ -2,7 +2,7 @@
 
 import { ColumnDef } from "@tanstack/react-table"
 import Image from "next/image"
-import { MoreHorizontal, ArrowUpDown, Link } from "lucide-react"
+import { MoreHorizontal, ArrowUpDown } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -14,6 +14,31 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Book } from "@/types/global"
+import { useRouter } from "next/navigation"
+
+const ActionsCell = ({ book }: { book: Book }) => {
+    const router = useRouter();
+
+    return (
+        <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="h-8 w-8 p-0">
+                    <MoreHorizontal className="h-4 w-4" />
+                </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={() => router.push(`/admin/books/${book._id}/edit`)}>
+                    Edit
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem className="text-red-600">
+                    Delete
+                </DropdownMenuItem>
+            </DropdownMenuContent>
+        </DropdownMenu>
+    )
+}
+
 
 
 export const columns: ColumnDef<Book>[] = [
@@ -56,28 +81,6 @@ export const columns: ColumnDef<Book>[] = [
     {
         accessorKey: "Actions",
         id: "actions",
-        cell: ({ row }) => {
-            const book = row.original;
-
-            return (
-                <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" className="h-8 w-8 p-0">
-                            <MoreHorizontal className="h-4 w-4" />
-                        </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                        <Link href={`/admin/books/${book._id}/edit`}>
-                            <DropdownMenuItem>Edit</DropdownMenuItem>
-                        </Link>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem className="text-red-600">
-                            Delete
-                        </DropdownMenuItem>
-                    </DropdownMenuContent>
-                </DropdownMenu>
-            )
-        },
+        cell: ({ row }) => <ActionsCell book={row.original} />,
     },
-
 ]
