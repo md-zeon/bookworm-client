@@ -1,4 +1,4 @@
-import { Book, Genre } from "@/types/global";
+import { Book, Genre, User } from "@/types/global";
 import apiFetch from "./handlers/fetch";
 import { SignInParams, SignUpParams } from "./types/api";
 
@@ -54,5 +54,21 @@ export const api = {
 			apiFetch<T>(`/admin/books/${id}`, {
 				method: "DELETE",
 			}),
+	},
+	users: {
+		getAll: <T = User[]>() => apiFetch<T>("/admin/users"),
+		updateRole: <T = User>({
+			id,
+			role,
+		}: {
+			id: string;
+			role: "user" | "admin";
+		}) =>
+			apiFetch<T>(`/admin/users/${id}/role`, {
+				method: "PATCH",
+				body: JSON.stringify({ role }),
+			}),
+		delete: <T = null>(id: string) =>
+			apiFetch<T>(`/admin/users/${id}`, { method: "DELETE" }),
 	},
 };

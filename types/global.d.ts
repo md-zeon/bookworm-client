@@ -1,9 +1,29 @@
-export interface User {
+export interface AuthUser {
 	id: string;
 	name: string;
 	email: string;
 	role: "user" | "admin";
 	photoURL?: string;
+}
+
+export interface User {
+	_id: string;
+	name: string;
+	email: string;
+	role: "user" | "admin";
+	photoURL?: string;
+	readingGoals?: {
+		annualGoal: number;
+		currentYear: number;
+		startDate: Date | null;
+	};
+	readingStreak?: {
+		current: number;
+		longest: number;
+		lastReadDate: Date | null;
+	};
+	createdAt: string;
+	updatedAt: string;
 }
 
 export interface Genre {
