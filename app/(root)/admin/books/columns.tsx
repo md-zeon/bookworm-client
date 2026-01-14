@@ -9,35 +9,41 @@ import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
-    DropdownMenuLabel,
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Book } from "@/types/global"
 import { useRouter } from "next/navigation"
+import { useState } from "react"
+import DeleteBookDialog from "@/components/dialogs/DeleteBookDialog"
 
 const ActionsCell = ({ book }: { book: Book }) => {
     const router = useRouter();
+    const [open, setOpen] = useState(false);
 
     return (
-        <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="h-8 w-8 p-0">
-                    <MoreHorizontal className="h-4 w-4" />
-                </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={() => router.push(`/admin/books/${book._id}/edit`)}>
-                    Edit
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem className="text-red-600">
-                    Delete
-                </DropdownMenuItem>
-            </DropdownMenuContent>
-        </DropdownMenu>
-    )
-}
+        <>
+            <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" className="h-8 w-8 p-0">
+                        <MoreHorizontal className="h-4 w-4" />
+                    </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                    <DropdownMenuItem onClick={() => router.push(`/admin/books/${book._id}/edit`)}>
+                        Edit
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem className="text-red-600" onClick={() => setOpen(true)}>
+                        Delete
+                    </DropdownMenuItem>
+                </DropdownMenuContent>
+            </DropdownMenu>
+
+            <DeleteBookDialog id={book._id} open={open} onOpenChange={setOpen} />
+        </>
+    );
+};
 
 
 
