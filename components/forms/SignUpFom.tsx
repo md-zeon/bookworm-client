@@ -10,7 +10,7 @@ import ROUTES from "@/constants/routes";
 import { toast } from "sonner";
 import { api } from "@/lib/api";
 import { uploadImage } from "@/lib/upload";
-import { User } from "@/types/global";
+import { AuthUser } from "@/types/global";
 
 const SignUpForm = () => {
     const router = useRouter();
@@ -49,7 +49,7 @@ const SignUpForm = () => {
 
             console.log("photoURL", photoURL);
 
-            const result = await api.auth.signUp<User>({ name, email, password, photoURL });
+            const result = await api.auth.signUp<AuthUser>({ name, email, password, photoURL });
 
             if (!result.success) {
                 throw new Error(result.message || "Registration failed");
