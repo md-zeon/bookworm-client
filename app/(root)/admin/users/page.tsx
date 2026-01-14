@@ -30,9 +30,7 @@ export default function ManageUsersPage() {
     return (
         <div className="p-4">
             <h1 className="text-2xl font-bold mb-4">Manage Users</h1>
-
-            <DataTable columns={userColumns} data={users} isLoading={loading} />
-
+            <DataTable columns={userColumns} data={users} isLoading={loading} searchKeys={["name", "email"]} pageSize={10} />
         </div>
     );
 }
