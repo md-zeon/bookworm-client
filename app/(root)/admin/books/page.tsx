@@ -1,5 +1,5 @@
 import { columns } from "./columns"
-import { DataTable } from "./data-table"
+import { DataTable } from "@/components/ui/data-table";
 import { api } from "@/lib/api"
 
 export default async function BooksPage() {
@@ -11,7 +11,7 @@ export default async function BooksPage() {
                 <h1 className="text-2xl font-bold">Book Management</h1>
             </div>
 
-            <DataTable columns={columns} data={books!} />
+            <DataTable columns={columns} data={books!} pageSize={10} searchKeys={["title", "author"]} />
         </div>
     )
 }
