@@ -1,4 +1,4 @@
-import { Genre } from "@/types/global";
+import { Book, Genre } from "@/types/global";
 import apiFetch from "./handlers/fetch";
 import { SignInParams, SignUpParams } from "./types/api";
 
@@ -33,6 +33,24 @@ export const api = {
 			}),
 		delete: <T = null>(id: string) =>
 			apiFetch<T>(`/admin/genres/${id}`, {
+				method: "DELETE",
+			}),
+	},
+	books: {
+		getAll: <T = Book[]>(params?: string) =>
+			apiFetch<T>(`/admin/books${params ? `?${params}` : ""}`),
+		create: <T = Book>(bookData: Partial<Book>) =>
+			apiFetch<T>("/admin/books", {
+				method: "POST",
+				body: JSON.stringify(bookData),
+			}),
+		update: <T = Book>(id: string, bookData: Partial<Book>) =>
+			apiFetch<T>(`/admin/books/${id}`, {
+				method: "PATCH",
+				body: JSON.stringify(bookData),
+			}),
+		delete: <T = null>(id: string) =>
+			apiFetch<T>(`/admin/books/${id}`, {
 				method: "DELETE",
 			}),
 	},

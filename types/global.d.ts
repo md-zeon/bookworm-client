@@ -12,3 +12,17 @@ export interface Genre {
 	createdAt: string;
 	updatedAt: string;
 }
+
+export interface Book {
+	_id: string;
+	title: string;
+	author: string;
+	genre: string;
+	description?: string;
+	coverImage: string;
+	totalPages: number;
+	averageRating: number;
+	totalReviews: number;
+	createdAt: string;
+	updatedAt: string;
+}

@@ -1,6 +1,5 @@
 import CONFIG from "@/constants/config";
 
-// bookworm-client/lib/upload.ts
 export const uploadImage = async (file: File) => {
 	const cloudName = CONFIG.CLOUDINARY_CLOUD_NAME!;
 	const uploadPreset = CONFIG.CLOUDINARY_UPLOAD_PRESET!;
